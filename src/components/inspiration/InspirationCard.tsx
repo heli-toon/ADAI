@@ -43,9 +43,9 @@ export function InspirationCard({ item }: { item: Inspiration }) {
             </Badge>
           ))}
           {item.technologies.slice(0, 1).map((t) => (
-            <span key={t} className="text-[11px] text-muted-foreground">
+            <Badge key={t} variant="outline" className="rounded-sm font-normal">
               {t}
-            </span>
+            </Badge>
           ))}
         </div>
       </div>

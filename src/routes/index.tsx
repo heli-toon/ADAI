@@ -30,7 +30,7 @@ export const Route = createFileRoute("/")({
 });
 
 function Collection() {
-  const items = useInspirations();
+  const { items, isLoading } = useInspirations();
   const [filters, setFilters] = useState<Filters>(emptyFilters);
   const [showFilters, setShowFilters] = useState(false);
 
@@ -61,28 +61,34 @@ function Collection() {
           </Button>
         </div>
 
-        <div className="grid gap-8 lg:grid-cols-[240px_minmax(0,1fr)]">
-          <div className={showFilters ? "block" : "hidden lg:block"}>
-            <FilterPanel items={items} filters={filters} onChange={setFilters} />
+        {isLoading ? (
+          <div className="flex min-h-[calc(100vh-64px)] items-center justify-center">
+            <p className="text-sm text-muted-foreground">Loading inspirations...</p>
           </div>
+        ) : (
+          <div className="grid gap-8 lg:grid-cols-[240px_minmax(0,1fr)]">
+            <div className={showFilters ? "block" : "hidden lg:block"}>
+              <FilterPanel items={items} filters={filters} onChange={setFilters} />
+            </div>
 
-          <div>
-            {results.length === 0 ? (
-              <div className="rounded-md border border-dashed border-border px-6 py-16 text-center">
-                <p className="text-sm font-medium text-foreground">Nothing matches those filters</p>
-                <p className="mt-1 text-sm text-muted-foreground">
-                  Try a different search term or clear a filter.
-                </p>
-              </div>
-            ) : (
-              <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
-                {results.map((item) => (
-                  <InspirationCard key={item.id} item={item} />
-                ))}
-              </div>
-            )}
+            <div>
+              {results.length === 0 ? (
+                <div className="rounded-md border border-dashed border-border px-6 py-16 text-center">
+                  <p className="text-sm font-medium text-foreground">Nothing matches those filters</p>
+                  <p className="mt-1 text-sm text-muted-foreground">
+                    Try a different search term or clear a filter.
+                  </p>
+                </div>
+              ) : (
+                <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+                  {results.map((item) => (
+                    <InspirationCard key={item.id} item={item} />
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
-        </div>
+        )}
       </main>
     </div>
   );

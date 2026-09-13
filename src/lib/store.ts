@@ -46,9 +46,13 @@ export function addInspiration(entry: Inspiration) {
 /** Reactive list of every inspiration, seeded plus locally saved. */
 export function useInspirations() {
   const [items, setItems] = useState<Inspiration[]>(seedInspirations);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const sync = () => setItems(getAllInspirations());
+    const sync = () => {
+      setItems(getAllInspirations());
+      setIsLoading(false);
+    };
     sync();
     listeners.add(sync);
     return () => {
@@ -56,5 +60,5 @@ export function useInspirations() {
     };
   }, []);
 
-  return items;
+  return { items, isLoading };
 }

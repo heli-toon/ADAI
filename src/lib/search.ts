@@ -28,8 +28,15 @@ export function filterInspirations(items: Inspiration[], f: Filters): Inspiratio
     if (f.primaryColor && i.primaryColor !== f.primaryColor) return false;
     if (f.purpose && !i.purpose.includes(f.purpose)) return false;
     if (f.technology && !i.technologies.includes(f.technology)) return false;
-    if (f.theme && i.theme !== f.theme && i.theme !== "both" && f.theme !== "both") return false;
-    if (f.theme === "both" && i.theme !== "both") return false;
+    if (f.theme) {
+      if (f.theme === "both") {
+        // When filtering for "both", only show items that work in both modes
+        if (i.theme !== "both") return false;
+      } else {
+        // When filtering for "light" or "dark", show items that match that theme OR work in both modes
+        if (i.theme !== f.theme && i.theme !== "both") return false;
+      }
+    }
     if (terms.length) {
       const hay = haystack(i);
       if (!terms.every((t) => hay.includes(t))) return false;

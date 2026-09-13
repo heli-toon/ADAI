@@ -21,6 +21,7 @@ export function PreviewFrame({
   const [visible, setVisible] = useState(false);
   const [imageFailed, setImageFailed] = useState(false);
   const [iframeFailed, setIframeFailed] = useState(false);
+  const iframeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const wantsIframe = allowIframe && item.previewType === "iframe" && !!item.previewUrl && !iframeFailed;
 
@@ -37,8 +38,12 @@ export function PreviewFrame({
 
   useEffect(() => {
     if (!wantsIframe || !visible) return;
-    const t = setTimeout(() => setIframeFailed(true), 6000);
-    return () => clearTimeout(t);
+    iframeTimeoutRef.current = setTimeout(() => setIframeFailed(true), 6000);
+    return () => {
+      if (iframeTimeoutRef.current) {
+        clearTimeout(iframeTimeoutRef.current);
+      }
+    };
   }, [wantsIframe, visible]);
 
   const showImage = !!item.imageUrl && !imageFailed && !(wantsIframe && visible);
